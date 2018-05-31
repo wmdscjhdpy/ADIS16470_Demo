@@ -98,24 +98,31 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	HAL_Delay(200);
 	ADX_Init();
-	HAL_Delay(400);
+	Self_Calibration();
+	static uint32_t timestamp;
+	static uint32_t wait=0;
+	static int32_t x,y,z;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	uint8_t addr[]={0x60,0x62,0x66};
-	static uint16_t data[]={0,0,0};
+	timestamp=HAL_GetTick();
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-	ADX_BurstRead();
-	ADX_Read_Reg(addr,data,3);
-	HAL_Delay(1000);
+	ADX_Single_Handle();
+	x=GyroData.anglex*1000;
+	y=GyroData.angley*1000;
+	z=GyroData.anglez*1000;
+	while(HAL_GetTick()-timestamp<2)//保证循环周期为2ms
+	{
+		wait++;
+	}
   }
   /* USER CODE END 3 */
-
+	
 }
 
 /**
